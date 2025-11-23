@@ -1,0 +1,31 @@
+# Python
+.myenv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Expo
+.expo/
+.expo-shared/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Env
+.env
+
+# Python virtual environments
+myenv/
+.venv/
+venv/
+env/
+ENV/
