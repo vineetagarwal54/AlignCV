@@ -1,0 +1,84 @@
+% Modern Resume Template for AlignCV
+% Using Jinja2 syntax for variable substitution
+
+\documentclass[11pt,a4paper,sans]{moderncv}
+
+% ModernCV theme and style
+\moderncvstyle{classic}
+\moderncvcolor{blue}
+
+% Character encoding
+\usepackage[utf8]{inputenc}
+
+% Adjust page margins
+\usepackage[scale=0.85]{geometry}
+
+% Personal information
+\name{\VAR{name}}{}
+\address{\VAR{location}}{}{}
+\phone[mobile]{\VAR{phone}}
+\email{\VAR{email}}
+\social[linkedin]{\VAR{linkedin}}
+\social[github]{\VAR{github}}
+
+\begin{document}
+
+\makecvtitle
+
+% Professional Summary
+\section{Summary}
+\cvitem{}{\VAR{summary}}
+
+% Experience Section
+\section{Experience}
+\BLOCK{for exp in experiences}
+\cventry{\VAR{exp.start_date}--\VAR{exp.end_date}}{\VAR{exp.title}}{\VAR{exp.company}}{\VAR{exp.location}}{}
+{
+\VAR{exp.description}
+\begin{itemize}
+\BLOCK{for bullet in exp.bullets}
+  \item \VAR{bullet}
+\BLOCK{endfor}
+\end{itemize}
+\BLOCK{if exp.technologies}
+\textit{Technologies: \VAR{exp.technologies|join(', ')}}
+\BLOCK{endif}
+}
+\BLOCK{endfor}
+
+% Education Section
+\section{Education}
+\BLOCK{for edu in education}
+\cventry{\VAR{edu.graduation_date}}{\VAR{edu.degree} in \VAR{edu.field}}{\VAR{edu.institution}}{\VAR{edu.location}}{\VAR{edu.gpa}}{}
+\BLOCK{endfor}
+
+% Skills Section
+\section{Skills}
+\cvitem{Technical}{\VAR{technical_skills|join(', ')}}
+\BLOCK{if soft_skills}
+\cvitem{Soft Skills}{\VAR{soft_skills|join(', ')}}
+\BLOCK{endif}
+\BLOCK{if languages}
+\cvitem{Languages}{\VAR{languages|join(', ')}}
+\BLOCK{endif}
+
+% Projects Section
+\BLOCK{if projects}
+\section{Projects}
+\BLOCK{for proj in projects}
+\cvitem{\VAR{proj.name}}{\VAR{proj.description}}
+\BLOCK{if proj.url}
+\cvitem{}{URL: \url{\VAR{proj.url}}}
+\BLOCK{endif}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+% Certifications Section
+\BLOCK{if certifications}
+\section{Certifications}
+\BLOCK{for cert in certifications}
+\cvitem{\VAR{cert.date}}{\VAR{cert.name}, \VAR{cert.issuer}}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\end{document}

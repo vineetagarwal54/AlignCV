@@ -1,0 +1,254 @@
+%%%%
+% AlignCV Resume Template
+% Based on MTecknology's Resume
+% Modified for dynamic data injection via Jinja2
+%%%%
+
+\documentclass[letterpaper,10pt]{article}
+
+% Dependencies
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{fontawesome5}
+\usepackage{multicol}
+\usepackage{bookmark}
+\usepackage{lastpage}
+
+% Serif
+\usepackage{CormorantGaramond}
+\usepackage{charter}
+
+% Colors
+\usepackage{xcolor}
+\definecolor{accentTitle}{HTML}{0e6e55}
+\definecolor{accentText}{HTML}{0e6e55}
+\definecolor{accentLine}{HTML}{a16f0b}
+
+% Misc. Options
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\urlstyle{same}
+
+% Adjust Margins
+\addtolength{\oddsidemargin}{-0.7in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.19in}
+\addtolength{\topmargin}{-0.7in}
+\addtolength{\textheight}{1.4in}
+
+\setlength{\multicolsep}{-3.0pt}
+\setlength{\columnsep}{-1pt}
+\setlength{\tabcolsep}{0pt}
+\setlength{\footskip}{3.7pt}
+\raggedbottom
+\raggedright
+
+% ATS Readability
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+%-----------------%
+% Custom Commands %
+%-----------------%
+
+% Centered title along with subtitle between HR
+\newcommand{\documentTitle}[2]{
+  \begin{center}
+    {\Huge\color{accentTitle} #1}
+    \vspace{10pt}
+    {\color{accentLine} \hrule}
+    \vspace{2pt}
+    \footnotesize{#2}
+    \vspace{2pt}
+    {\color{accentLine} \hrule}
+  \end{center}
+}
+
+% Section heading with horizontal rule
+\titleformat{\section}{
+  \vspace{-5pt}
+  \color{accentText}
+  \raggedright\large\bfseries
+}{}{0em}{}[\color{accentLine}\titlerule]
+
+% Section heading with separator and content on the same line
+\newcommand{\tinysection}[1]{
+  \phantomsection
+  \addcontentsline{toc}{section}{#1}
+  {\large{\bfseries\color{accentText}#1} {\color{accentLine} |}}
+}
+
+% Indented line with arguments left/right aligned in document
+\newcommand{\heading}[2]{
+  \hspace{10pt}#1\hfill#2\\
+}
+
+% Adds \textbf to \heading
+\newcommand{\headingBf}[2]{
+  \heading{\textbf{#1}}{\textbf{#2}}
+}
+
+% Adds \textit to \heading
+\newcommand{\headingIt}[2]{
+  \heading{\textit{#1}}{\textit{#2}}
+}
+
+% Template for itemized lists
+\newenvironment{resume_list}{
+  \vspace{-7pt}
+  \begin{itemize}[itemsep=-2px, parsep=1pt, leftmargin=30pt]
+}{
+  \end{itemize}
+}
+
+% Bullets used in itemized lists
+\renewcommand\labelitemi{--}
+
+%===================%
+% Resume Document   %
+%===================%
+
+\begin{document}
+
+  %---------%
+  % Heading %
+  %---------%
+
+  \documentTitle{\VAR{name}}{
+    \BLOCK{if phone}
+    \href{tel:\VAR{phone}}{
+      \raisebox{-0.15\height} \VAR{phone}} |
+    \BLOCK{endif}
+    \BLOCK{if email}
+    \href{mailto:\VAR{email}}{
+      \raisebox{-0.15\height} \VAR{email}} |
+    \BLOCK{endif}
+    \BLOCK{if linkedin}
+    \href{\VAR{linkedin}}{
+      \raisebox{-0.15\height} LinkedIn} |
+    \BLOCK{endif}
+    \BLOCK{if github}
+    \href{\VAR{github}}{
+      \raisebox{-0.15\height} GitHub} |
+    \BLOCK{endif}
+    \BLOCK{if website}
+    \href{\VAR{website}}{
+      \raisebox{-0.15\height} Portfolio}
+    \BLOCK{endif}
+  }
+
+  %---------%
+  % Summary %
+  %---------%
+
+  \BLOCK{if summary}
+  \tinysection{Summary}
+  \VAR{summary}
+  \BLOCK{endif}
+
+  %--------%
+  % Skills %
+  %--------%
+
+  \BLOCK{if technical_skills or soft_skills}
+  \section{Skills}
+
+  \noindent
+  \begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \BLOCK{if technical_skills}
+    \textbf{Technical Skills}\enspace \VAR{technical_skills|join(', ')}\\[3pt]
+    \BLOCK{endif}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \vspace{0pt}
+    \BLOCK{if soft_skills}
+    \textbf{Soft Skills}\enspace \VAR{soft_skills|join(', ')}\\[3pt]
+    \BLOCK{endif}
+    \BLOCK{if languages}
+    \textbf{Languages}\enspace \VAR{languages|join(', ')}
+    \BLOCK{endif}
+  \end{minipage}
+  \BLOCK{endif}
+
+  %------------%
+  % Experience %
+  %------------%
+
+  \BLOCK{if experiences}
+  \section{Experience}
+
+  \BLOCK{for exp in experiences}
+  \headingBf{\VAR{exp.company}}{\VAR{exp.start_date} -- \VAR{exp.end_date}}
+  \headingIt{\VAR{exp.title}}{\BLOCK{if exp.location}\VAR{exp.location}\BLOCK{endif}}
+  \BLOCK{if exp.bullets}
+  \begin{resume_list}
+    \BLOCK{for bullet in exp.bullets}
+    \item \VAR{bullet}
+    \BLOCK{endfor}
+  \end{resume_list}
+  \BLOCK{endif}
+  \BLOCK{endfor}
+  \BLOCK{endif}
+
+  %-----------%
+  % Education %
+  %-----------%
+
+  \BLOCK{if education}
+  \section{Education}
+
+  \BLOCK{for edu in education}
+  \headingBf{\VAR{edu.institution}}{\BLOCK{if edu.graduation_date}\VAR{edu.graduation_date}\BLOCK{endif}}
+  \headingIt{\VAR{edu.degree}\BLOCK{if edu.field} in \VAR{edu.field}\BLOCK{endif}}{\BLOCK{if edu.location}\VAR{edu.location}\BLOCK{endif}}
+  \BLOCK{if edu.gpa}
+  \begin{resume_list}
+    \item GPA: \VAR{edu.gpa}
+    \BLOCK{for honor in edu.honors}
+    \item \VAR{honor}
+    \BLOCK{endfor}
+  \end{resume_list}
+  \BLOCK{endif}
+  \BLOCK{endfor}
+  \BLOCK{endif}
+
+  %----------%
+  % Projects %
+  %----------%
+
+  \BLOCK{if projects}
+  \section{Projects}
+
+  \BLOCK{for proj in projects}
+  \headingBf{\VAR{proj.name}\BLOCK{if proj.url} \href{\VAR{proj.url}}{(Link)}\BLOCK{endif}}{}
+  \BLOCK{if proj.bullets}
+  \begin{resume_list}
+    \BLOCK{for bullet in proj.bullets}
+    \item \VAR{bullet}
+    \BLOCK{endfor}
+  \end{resume_list}
+  \BLOCK{else}
+  \hspace{10pt}\VAR{proj.description}\\
+  \BLOCK{endif}
+  \BLOCK{endfor}
+  \BLOCK{endif}
+
+  %---------------%
+  % Certifications %
+  %---------------%
+
+  \BLOCK{if certifications}
+  \section{Certifications}
+
+  \BLOCK{for cert in certifications}
+  \headingBf{\VAR{cert.name}}{\VAR{cert.issuer}\BLOCK{if cert.date} -- \VAR{cert.date}\BLOCK{endif}}
+  \BLOCK{endfor}
+  \BLOCK{endif}
+
+\end{document}
